@@ -1,0 +1,97 @@
+version: "3.7"
+services:
+  api:
+    build:
+      context: ./api/docker
+      dockerfile: development/nginx/Dockerfile
+    # links:
+      # - api-php-fpm
+    ports:
+      - "8081:443"
+    volumes:
+      - ./api:/app
+      - ./api/docker/common/nginx/conf.d/ssl:/etc/nginx/ssl
+    depends_on:
+      - api-php-fpm
+
+  api-php-fpm:
+    build:
+      context: ./api/docker
+      dockerfile: development/php-fpm/Dockerfile
+    # links:
+      # - api-postgres
+      # - redis
+      # - elasticsearch
+    environment:
+      APP_ENV: dev
+      APP_DEBUG: 1
+      PHP_IDE_CONFIG: serverName=API
+      DB_HOST: api-postgres
+      DB_USER: app
+      DB_PASSWORD: secret
+      DB_NAME: app
+      REDIS_PORT: 6379
+      REDIS_HOST: redis
+    volumes:
+      - ./api:/app
+    depends_on:
+      - api-postgres
+      - redis
+
+  api-php-cli:
+    build:
+      context: ./api/docker
+      dockerfile: development/php-cli/Dockerfile
+    # links:
+      # - api-postgres
+      # - redis
+      # - elasticsearch
+    environment:
+      # APP_ENV: dev
+      APP_DEBUG: 1
+      DB_HOST: api-postgres
+      DB_USER: app
+      DB_PASSWORD: secret
+      DB_NAME: app
+      REDIS_PORT: 6379
+      REDIS_HOST: redis
+      # PHP_IDE_CONFIG: serverName=API
+    volumes:
+      - ./api:/app
+
+    # depends_on:
+      # - api-postgres
+      # - redis
+      # - elasticsearch
+
+  api-node-cli:
+    build:
+      context: api/docker/development/node
+    volumes:
+      - ./api:/app
+
+  api-postgres:
+    image: postgres:alpine3.18
+    environment:
+        POSTGRES_USER: app
+        POSTGRES_PASSWORD: secret
+        POSTGRES_DB: app
+    volumes:
+        - api-postgres:/var/lib/postgresql/data
+    ports:
+        - "54321:5432"
+
+  mailer:
+      image: mailhog/mailhog
+      ports:
+        - "8082:8025"
+
+  redis:
+      image: redis:alpine3.18
+      ports:
+        - "63791:6379"
+
+volumes:
+  api-postgres:
+  redis:
+  mailer:
