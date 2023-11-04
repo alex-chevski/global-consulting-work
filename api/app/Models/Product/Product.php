@@ -6,7 +6,9 @@ namespace App\Models\Product;
 
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
@@ -19,6 +21,9 @@ use Illuminate\Support\Facades\Gate;
  */
 class Product extends Model
 {
+    use HasFactory;
+    use Notifiable;
+
     public const STATUS_AVAILABLE = 'available';
     public const STATUS_UNAVAILABLE = 'unavailable';
 
@@ -75,6 +80,12 @@ class Product extends Model
     public static function checkAccess(): bool
     {
         return Gate::allows('manage-article');
+    }
+
+    public function routeNotificationForMail($notification)
+    {
+        // Вернуть только адрес электронной почты ...
+        return app()->make('config')->get('role')['products']['email'];
     }
 
     private function userToChangeArticle(string $article)
