@@ -37,7 +37,7 @@ docker-memory:
 
 api-clear:
 	docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf storage/debugbar/*'
-	docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf storage/app/public/*'
+	# docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf storage/app/public/*'
 	docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf public/build'
 
 api-init: api-node-init api-composer-install api-permissions api-generate-app-key api-migrate-database
@@ -54,6 +54,9 @@ api-generate-app-key:
 
 api-composer-install:
 	docker compose run --rm api-php-cli composer install
+
+api-start-queue:
+	docker compose run --rm api-php-cli php artisan queue:work
 
 api-lint:
 	docker compose run --rm api-php-cli composer lint
