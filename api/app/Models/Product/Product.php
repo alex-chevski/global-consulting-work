@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 
 /**
  * @property int $id
@@ -43,32 +42,29 @@ class Product extends Model
         ];
     }
 
-    public static function new(string $article, string $name, string $status, array $data)
+    public static function new(string $article, string $name, string $status, array $keys, array $values)
     {
         return static::create([
             'article' => $article,
             'name' => $name,
             'status' => $status,
-            'data' => $data,
+            'data' => toArrayData($keys, $values),
         ]);
     }
 
-    public function put(string $article, string $name, string $status, array $data)
+    public function put(string $article, string $name, string $status, array $keys, array $values)
     {
-        return DB::transaction(function () use ($article, $name, $status, $data) {
+        return DB::transaction(function () use ($article, $name, $status, $keys, $values): void {
             if ($this->userToChangeArticle($article)) {
                 throw new DomainException('У вас недостаточно прав для изменения article! ');
             }
 
-            $product = $this->make([
+            $product = $this->updateOrFail([
                 'article' => $article,
                 'name' => $name,
                 'status' => $status,
-                'data' => $data,
+                'data' => toArrayData($keys, $values),
             ]);
-
-            $product->update();
-            return $product;
         });
     }
 
@@ -77,9 +73,19 @@ class Product extends Model
         return $query->where('status', $product->status);
     }
 
+    public function scopeForProduct(Builder $query, string $article)
+    {
+        return $query->where('article', $article)->first();
+    }
+
+    public function scopeForId(Builder $query, int $id)
+    {
+        return static::findOrFail($id);
+    }
+
     public static function checkAccess(): bool
     {
-        return Gate::allows('manage-article');
+        return isManageArticle();
     }
 
     public function routeNotificationForMail($notification)

@@ -42,10 +42,10 @@ class SendEmailCreatedProductNotification extends Notification implements Should
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage())
-            ->subject('Продукт создан' . $this->product->article)
+            ->subject('Продукт создан ' . $this->product->article)
             ->greeting('Привет!')
-            ->line('Ваш продукт' . $this->product->name . 'успешно создан! ')
-            ->action('Перейти на продукт', route('product.show', $this->product))
+            ->line('Ваш продукт ' . $this->product->name . ' успешно создан! ')
+            // ->action('Перейти на продукт', route('product.show', $this->product))
             ->line('Спасибо что используете наше приложение!');
     }
 

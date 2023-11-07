@@ -24,7 +24,8 @@ final class UpdateTest extends TestCase
             'article' => 'mtokb2',
             'name' => '216-1KT3645-K',
             'status' => $product->status,
-            'data' => ['color' => 'black'],
+            'keys' => ['color'],
+            'values' => ['black'],
         ]);
 
         $response
@@ -41,7 +42,8 @@ final class UpdateTest extends TestCase
             'article' => 'mtokb1',
             'name' => '216-1KT3645-K',
             'status' => $product->status,
-            'data' => ['color' => 'black'],
+            'keys' => ['color'],
+            'values' => ['black'],
         ]);
 
         $response

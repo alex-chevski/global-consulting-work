@@ -15,11 +15,16 @@ class CreateRequest extends FormRequest
         return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, array|\Illuminate\Contracts\Validation\ValidationRule|string>
+     */
     public function rules(): array
     {
         return [
             'name' => 'required|string|min:10|max:255',
-            'article' => 'required|string|article|regex:/^[a-z0-9]+$/i|unique:products',
+            'article' => 'required|string|regex:/^[a-z0-9]+$/i|unique:products,article',
             'status' => ['required', 'string', Rule::in(array_keys(Product::statusList()))],
         ];
     }

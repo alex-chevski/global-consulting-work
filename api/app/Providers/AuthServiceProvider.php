@@ -23,9 +23,12 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('manage-article', static function (Application $app) {
-            $config = $app->make('config')->get('role');
-            return $config['products']['role'] === 'admin';
-        });
+        $this->registerPolicies();
+        $this->registerPermissions();
+    }
+
+    private function registerPermissions(): void
+    {
+        Gate::define('manage-article', static fn () => isAdmin());
     }
 }

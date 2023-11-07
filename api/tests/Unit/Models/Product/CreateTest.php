@@ -18,7 +18,7 @@ final class CreateTest extends TestCase
 
     public function testNew(): void
     {
-        $product = Product::new($article = 'article', $name = 'name', $status = 'available', $data = $this->getData());
+        $product = Product::new($article = 'article', $name = 'name', $status = 'available', $keys = ['color'], $values = ['red']);
 
         self::assertNotEmpty($product);
 
@@ -26,14 +26,6 @@ final class CreateTest extends TestCase
         self::assertEquals($name, $product->name);
         self::assertEquals($status, $product->status);
         self::assertIsArray($product->data);
-        self::assertEquals($data, $product->data);
-    }
-
-    private function getData()
-    {
-        return [
-            'color' => 'black',
-            'size' => 'L',
-        ];
+        self::assertEquals(toArrayData($keys, $values), $product->data);
     }
 }

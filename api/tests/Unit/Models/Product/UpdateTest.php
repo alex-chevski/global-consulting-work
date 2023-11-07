@@ -21,39 +21,33 @@ final class UpdateTest extends TestCase
     // for user role
     public function testAccessError(): void
     {
-        $product = Product::new('article', 'name', 'available', $this->getData());
+        $product = Product::new('article', 'name', 'available', ['color'], ['size']);
 
         $this->expectExceptionMessage('У вас недостаточно прав для изменения article! ');
         $product = $product->put(
             'article2',
             'name2',
             'status2',
-            ['color' => 'white', 'size' => 'M'],
+            ['color'],
+            ['size'],
         );
     }
 
     public function testSuccess(): void
     {
-        $product = Product::new('article', 'name', 'available', $this->getData());
+        $product = Product::new('article', 'name', 'available', ['color'], ['size']);
 
         $product = $product->put(
             $article = 'article',
             $name = 'name2',
             $status = 'status2',
-            $data = ['color' => 'white', 'size' => 'M'],
+            $keys = ['color'],
+            $values = ['white']
         );
 
         self::assertEquals($article, $product->article);
         self::assertEquals($name, $product->name);
         self::assertEquals($status, $product->status);
-        self::assertEquals($data, $product->data);
-    }
-
-    private function getData()
-    {
-        return [
-            'color' => 'black',
-            'size' => 'L',
-        ];
+        self::assertEquals(toArrayData($keys, $values), $product->data);
     }
 }

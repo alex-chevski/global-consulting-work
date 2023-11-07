@@ -20,10 +20,11 @@ final class CreateTest extends TestCase
         $product = Product::factory()->make();
 
         $response = $this->post('/product', [
-            'article' => 'mtokb2',
+            'article' => $product->article,
             'name' => 'MTOK-B2/216-1KT3645-K',
             'status' => $product->status,
-            'data' => $product->data,
+            'keys' => ['color'],
+            'values' => ['black'],
         ]);
 
         $response
@@ -40,7 +41,8 @@ final class CreateTest extends TestCase
             'article' => 'MTOK-B2/216-1KT3645-K',
             'name' => $product->name,
             'status' => $product->status,
-            'data' => $product->data,
+            'keys' => ['color'],
+            'values' => ['black'],
         ]);
 
         $product = Product::factory()->make();
@@ -49,7 +51,8 @@ final class CreateTest extends TestCase
             'article' => 'MTOK-B2/216-1KT3645-K',
             'name' => $product->name,
             'status' => $product->status,
-            'data' => $product->data,
+            'keys' => ['color'],
+            'values' => ['black'],
         ]);
 
         $response

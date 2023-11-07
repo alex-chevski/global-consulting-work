@@ -14,10 +14,10 @@ return new class() extends Migration {
     {
         Schema::create('products', static function (Blueprint $table): void {
             $table->increments('id')->unsigned();
-            $table->string('article', 255)->unique();
+            $table->string('article', 255)->index();
             $table->string('name', 255);
             $table->string('status', 255);
-            $table->jsonb('data');
+            $table->jsonb('data')->nullable();
             $table->timestamps();
         });
     }

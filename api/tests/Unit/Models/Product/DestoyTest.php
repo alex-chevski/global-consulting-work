@@ -6,8 +6,8 @@ namespace Tests\Unit\Models\Product;
 
 use App\Models\Product\Product;
 use App\UseCases\Products\ProductService;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 /**
@@ -21,16 +21,14 @@ final class DestoyTest extends TestCase
     // for user role
     public function testSuccess(): void
     {
-        $product = Product::new($article = 'article', $name = 'name', $status = 'available', $data = $this->getData());
+        $product = Product::new($article = 'article', $name = 'name', $status = 'available', $keys = ['color'], $values = ['size']);
 
         self::assertEquals($article, $product->article);
         self::assertEquals($name, $product->name);
         self::assertEquals($status, $product->status);
-        self::assertEquals($data, $product->data);
+        self::assertEquals(toArrayData($keys, $values), $product->data);
 
         $service = $this->createService();
-
-        Product::findOrFail($product->id);
 
         $service->remove($product->id);
 
@@ -41,13 +39,5 @@ final class DestoyTest extends TestCase
     private function createService()
     {
         return app()->make(ProductService::class);
-    }
-
-    private function getData()
-    {
-        return [
-            'color' => 'black',
-            'size' => 'L',
-        ];
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\Product\CreateRequest;
 use App\Http\Requests\Product\UpdateRequest;
 use App\Models\Product\Product;
 use App\UseCases\Products\ProductService;
+use DomainException;
 
 class ProductsController extends Controller
 {
@@ -23,44 +24,53 @@ class ProductsController extends Controller
 
     public function index()
     {
-        $product = Product::orderBy('id', 'DESC')->take(10)->get();
+        $products = Product::orderBy('id', 'DESC')->take(10)->get();
+        $statuses = Product::statusList();
 
-        return view('product.home', compact('product'));
+        return view('products.index', compact('products', 'statuses'));
     }
 
     public function create()
     {
-        return view('product.create');
+        $statuses = Product::statusList();
+
+        return view('products.create', compact('statuses'));
     }
 
     public function store(CreateRequest $request)
     {
-        $this->service->add($request);
+        try {
+            $this->service->add($request);
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
-        return redirect()->route('product.index');
+        return redirect()->route('product.index')
+            ->with('success', 'Создан успешно продукт! Проверьте почту!');
     }
 
     public function show(Product $product)
     {
-        return view('product.show', compact('product'));
+        return view('products.show', compact('product'));
     }
 
     public function edit(Product $product)
     {
         $statuses = Product::statusList();
 
-        return view('product.edit', compact('product', 'statuses'));
+        return view('products.edit', compact('product', 'statuses'));
     }
 
     public function update(UpdateRequest $request, Product $product)
     {
-        try{
+        try {
             $this->service->update($request, $product);
-        }catch(\DomainException $e){
+        } catch (DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('product.index');
+        return redirect()->route('product.index')
+            ->with('success', 'Продукт успешно изменен!');
     }
 
     public function destroy(Product $product)
