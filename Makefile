@@ -40,7 +40,7 @@ api-clear:
 	# docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf storage/app/public/*'
 	docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf public/build'
 
-api-init: api-node-init api-composer-install api-permissions api-copy-to-env api-generate-app-key api-migrate-database
+api-init: api-node-init api-composer-install api-permissions api-copy-to-env api-generate-app-key api-storage-link api-migrate-database
 
 api-permissions:
 	docker run --rm -v ${PWD}/api:/app -w /app alpine chmod -R 755 .
@@ -57,6 +57,9 @@ api-composer-install:
 
 api-start-queue:
 	docker compose run --rm api-php-cli php artisan queue:work
+
+api-storage-link:
+	docker compose run --rm api-php-cli php artisan storage:link
 
 api-lint:
 	docker compose run --rm api-php-cli composer lint
