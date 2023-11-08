@@ -28,6 +28,13 @@ The mailer so confirm email, notify can be accessed at
 
     http://localhost:8082
 
+## Change Role, Name
+
+You change role in your .env
+
+    ROLE_USER=user
+    ROLE_USER=admin
+
 ### Author
 
 - **[alex-chevski](https://github.com/alex-chevski)**
