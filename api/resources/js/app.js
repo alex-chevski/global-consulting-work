@@ -70,7 +70,7 @@ $(document).on("click", "#createProduct", function (event) {
             </div>
             <div class="form-group col-9">
                 <label for="status" class="col-form-label">Статус</label>
-                <select id="status" class="form-select {{ $errors->has('status') ? ' is-invalid' : '' }}" name="status">
+                <select id="status" class="form-select" name="status">
                     <option value="available">Доступен</option>
                     <option value="unavailable">Недоступен</option>
                 </select>
@@ -287,7 +287,7 @@ $(document).on("click", "#showProduct", function (event) {
             </div>
             <div class="form-group col-9">
                 <label for="status" class="col-form-label">Статус</label>
-                <select id="status" class="form-select {{ $errors->has('status') ? ' is-invalid' : '' }}" name="status">
+                <select id="status" class="form-select" name="status">
                     <option value="` +
                 product.status +
                 `">` +
