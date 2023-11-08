@@ -77,11 +77,11 @@ $(document).on("click", "#createProduct", function (event) {
             </div>
             <h3 class="header-attributes mt-3">Аттрибуты</p>
             <div class="form-group row g-3 mt-3 visually-hidden" id="attributes">
-                <div class="col-auto">
+                <div class="col-auto container-attribute">
                     <label for="key" class="col-form-label name-attributes">Название</label>
                     <input name="keys[]"type="name" id="key" class="form-control">
                 </div>
-                <div class="col-auto">
+                <div class="col-auto container-attribute">
                     <label for="value" class="col-form-label name-attributes">Значение</label>
                     <input name="values[]" type="name" class="form-control" id="value">
                 </div>
@@ -91,9 +91,7 @@ $(document).on("click", "#createProduct", function (event) {
                     </a>
                 </div>
             </div>
-            <a type="button" class="" id="linkAttributes">
-                 <img class="icon-add-attributes" src="svg/add_attributes.svg" alt="dots icon">
-            </a>
+             <img id="linkAttributes"class="icon-add-attributes" src="svg/add_attributes.svg" alt="dots icon">
 
             <div class="form-group mt-3">
                 <button type="submit" class="btn btn-info send-button">Добавить</button>
@@ -295,14 +293,18 @@ $(document).on("click", "#showProduct", function (event) {
                 `">` +
                 getStatus(product.status) +
                 `</option>
-                    <option value="unavailable">Не доступен</option>
+                    <option value="` +
+                product.status +
+                `">` +
+                getStatusOther(product.status) +
+                `</option>
                 </select>
             </div>
             <h3 class="header-attributes mt-3">Аттрибуты</p>
             <div class="form-group row g-3 mt-3 visually-hidden" id="attributes">
                 <div class="col-auto">
                     <label for="key" class="col-form-label name-attributes">Название</label>
-                    <input name="keys[]"type="name" id="key" class="form-control">
+                    <input name="keys[]"type="name" id="key" class="form-control" value="">
                 </div>
                 <div class="col-auto">
                     <label for="value" class="col-form-label name-attributes">Значение</label>
@@ -314,9 +316,7 @@ $(document).on("click", "#showProduct", function (event) {
                     </a>
                 </div>
             </div>
-            <a type="button" class="" id="linkAttributes">
-                 <img class="icon-add-attributes" src="svg/add_attributes.svg" alt="dots icon">
-            </a>
+            <img id="linkAttributes"class="icon-add-attributes" src="svg/add_attributes.svg" alt="dots icon">
             <div class="form-group mt-3">
                 <button type="submit" class="btn btn-info send-button">Сохранить</button>
             </div>
@@ -360,14 +360,18 @@ $(document).on("click", "#showProduct", function (event) {
 
                             $("#flash").html("Продукт успешно изменен!");
                         },
-                        error: (jqXHR) => {
+                        error: (jqXHR, textStatus) => {
                             $(".app-dynamic-page").append(
                                 `<div id="flash-api" class="alert alert-danger">
                               <p id="flash"></p>
                           </div>`
                             );
 
-                            $("#flash").html(jqXHR.responseJSON.message);
+                            if (jqXHR.responseJSON.message == null) {
+                                $("#flash").html(jqXHR.responseJSON[1]);
+                            } else {
+                                $("#flash").html(jqXHR.responseJSON.message);
+                            }
                         },
                     });
                     // return false;
@@ -378,15 +382,20 @@ $(document).on("click", "#showProduct", function (event) {
     });
 });
 
-// edit form
 // create - form - closed;
 $(document).on("click", "#closedCreateForm", function (event) {
     $(".app-dynamic-page").addClass("visually-hidden");
+    localStorage.clear();
+    localStorage.removeItem("iteratorClick");
 });
 
 // helpers
 function getStatus(status) {
     return status === "available" ? "Доступен" : "Не доступен";
+}
+
+function getStatusOther(status) {
+    return status === "available" ? "Не доступен" : "Доступен";
 }
 
 function extractArrayFromInput(selector) {

@@ -284,7 +284,11 @@ main.app-content {
     position: absolute;
     width: 500px;
     height: 50px;
-    bottom: 40px;
+    bottom: 10px;
+}
+
+#linkAttributes {
+    cursor: pointer;
 }
 
 body {
